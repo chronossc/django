@@ -1,6 +1,4 @@
 # -*- coding:UTF-8 -*-
-# Author: Marinho Brandao
-#
 
 import re, math
 from random import randint
@@ -338,7 +336,10 @@ class CPF(object):
         return u''.join([str(x) for x in self.cpf])
 
 def get_digits(randns,d1weight,d2weight):
-    """ return a tuple with cpf or cnpj digits """
+    """
+    return a tuple with cpf or cnpj digits. we use same method to get
+    digits based on numbers and weights
+    """
 
     # GET FIRST CHECK DIGIT
 
