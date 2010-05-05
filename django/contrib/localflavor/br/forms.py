@@ -8,6 +8,7 @@ from django.forms import ValidationError
 from django.forms.fields import Field, RegexField, CharField, Select
 from django.utils.encoding import smart_unicode
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.localflavor.br.br_cpfcnpj import CPF,CNPJ
 import re
 
 phone_digits_re = re.compile(r'^(\d{2})[-\.]?(\d{4})[-\.]?(\d{4})$')
@@ -73,11 +74,6 @@ class BRStateChoiceField(Field):
             raise ValidationError(self.error_messages['invalid'])
         return value
 
-def DV_maker(v):
-    if v >= 2:
-        return 11 - v
-    return 0
-
 class BRCPFField(CharField):
     """
     This field validate a CPF number or a CPF string. A CPF number is
@@ -93,7 +89,9 @@ class BRCPFField(CharField):
     }
 
     def __init__(self, *args, **kwargs):
-        super(BRCPFField, self).__init__(max_length=14, min_length=11, *args, **kwargs)
+        kwargs['max_length'] = 14
+        kwargs['min_length'] = 11
+        super(BRCPFField, self).__init__(*args, **kwargs)
 
     def clean(self, value):
         """
@@ -101,36 +99,25 @@ class BRCPFField(CharField):
         11-digit number.
         """
         value = super(BRCPFField, self).clean(value)
-        if value in EMPTY_VALUES:
-            return u''
-        orig_value = value[:]
-        if not value.isdigit():
-            value = re.sub("[-\.]", "", value)
+
         try:
-            int(value)
-        except ValueError:
-            raise ValidationError(self.error_messages['digits_only'])
-        if len(value) != 11:
-            raise ValidationError(self.error_messages['max_digits'])
-        orig_dv = value[-2:]
+            cpf = CPF(value)
+        except ValueError,err:
+            # CPF class already raise internal erros if cpf isn't valid
+            raise ValidationError(_(err.message))
 
-        new_1dv = sum([i * int(value[idx]) for idx, i in enumerate(range(10, 1, -1))])
-        new_1dv = DV_maker(new_1dv % 11)
-        value = value[:-2] + str(new_1dv) + value[-1]
-        new_2dv = sum([i * int(value[idx]) for idx, i in enumerate(range(11, 1, -1))])
-        new_2dv = DV_maker(new_2dv % 11)
-        value = value[:-1] + str(new_2dv)
-        if value[-2:] != orig_dv:
-            raise ValidationError(self.error_messages['invalid'])
+        return value
 
-        return orig_value
+class BRCNPJField(CharField):
+    """
+    This field validate a CNPJ number or a CNPJ string. A CNPJ number is
+    compounded by XX.XXX.XXX/XXXX-VD. The two last digits are check digits.
+    """
 
-class BRCNPJField(Field):
-    default_error_messages = {
-        'invalid': _("Invalid CNPJ number."),
-        'digits_only': _("This field requires only numbers."),
-        'max_digits': _("This field requires at least 14 digits"),
-    }
+    def __init__(self,*args,**kwargs):
+        kwargs['max_length'] = 18
+        kwargs['min_length'] = 14
+        super(BRCNPJField,self).__init__(*args,**kwargs)
 
     def clean(self, value):
         """
@@ -138,26 +125,11 @@ class BRCNPJField(Field):
         group of 14 characters.
         """
         value = super(BRCNPJField, self).clean(value)
-        if value in EMPTY_VALUES:
-            return u''
-        orig_value = value[:]
-        if not value.isdigit():
-            value = re.sub("[-/\.]", "", value)
+
         try:
-            int(value)
-        except ValueError:
-            raise ValidationError(self.error_messages['digits_only'])
-        if len(value) != 14:
-            raise ValidationError(self.error_messages['max_digits'])
-        orig_dv = value[-2:]
+            cnpj = CNPJ(value)
+        except ValueError,err:
+            # CNPJ class already raise internal errors if CNPJ isn't valid
+            raise ValidationError(_(err.message))
 
-        new_1dv = sum([i * int(value[idx]) for idx, i in enumerate(range(5, 1, -1) + range(9, 1, -1))])
-        new_1dv = DV_maker(new_1dv % 11)
-        value = value[:-2] + str(new_1dv) + value[-1]
-        new_2dv = sum([i * int(value[idx]) for idx, i in enumerate(range(6, 1, -1) + range(9, 1, -1))])
-        new_2dv = DV_maker(new_2dv % 11)
-        value = value[:-1] + str(new_2dv)
-        if value[-2:] != orig_dv:
-            raise ValidationError(self.error_messages['invalid'])
-
-        return orig_value
+        return value
