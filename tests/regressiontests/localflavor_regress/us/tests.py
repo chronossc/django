@@ -1,6 +1,3 @@
-<<<<<<< HEAD:tests/regressiontests/localflavor/tests.py
-from us.tests import *
-=======
 from django.test import TestCase
 from forms import USPlaceForm
 
@@ -83,4 +80,3 @@ class USLocalflavorTests(TestCase):
 <option value="WY">Wyoming</option>
 </select>"""
         self.assertEqual(str(self.form['state']), state_select_html)
->>>>>>> ticket13495:tests/regressiontests/localflavor_regress/us/tests.py
