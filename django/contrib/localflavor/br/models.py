@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.localflavor.br.br_cpfcnpj import CPF,CNPJ
 from django.contrib.localflavor.br import forms
 
+EMPTY_VALUES=(None,'')
 
 class BRCPFField(models.CharField):
     """ CPF Model field """
@@ -21,7 +22,7 @@ class BRCPFField(models.CharField):
 
     def to_python(self,value):
         """ convert string from base to a CPF instance """
-        if isinstance(value,CPF) or value is None:
+        if isinstance(value,CPF) or value in EMPTY_VALUES:
             return value
         try:
             return CPF(value)
@@ -55,7 +56,7 @@ class BRCNPJField(models.CharField):
 
     def to_python(self,value):
         """ convert string from base to a CNPJ instance """
-        if isinstance(value,CNPJ) or value is None:
+        if isinstance(value,CNPJ) or value in EMPTY_VALUES:
             return value
         try:
             return CNPJ(value)
