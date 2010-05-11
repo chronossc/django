@@ -104,7 +104,7 @@ class BRCPFField(CharField):
             cpf = CPF(value)
         except ValueError,err:
             # CPF class already raise internal erros if cpf isn't valid
-            raise ValidationError(_(err.message))
+            raise ValidationError(err.message)
 
         return value
 
@@ -130,6 +130,6 @@ class BRCNPJField(CharField):
             cnpj = CNPJ(value)
         except ValueError,err:
             # CNPJ class already raise internal errors if CNPJ isn't valid
-            raise ValidationError(_(err.message))
+            raise ValidationError(err.message)
 
         return value

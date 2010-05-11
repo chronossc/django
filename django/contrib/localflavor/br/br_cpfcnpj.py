@@ -5,7 +5,7 @@ from random import randint
 from django.db import models
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 # -------------------------------------------------
 # Based in http://www.python.org.br/wiki/VerificadorDeCnpj
@@ -31,9 +31,9 @@ class CNPJ(object):
     """
 
     error_messages = {
-        'invalid': u"Invalid CNPJ number.",
-        'max_digits': u"CNPJ requires at most 14 digits or 18 characters.",
-        'digits_only': u"CNPJ requires only numbers, allow '.', '/' and '-' for long format.",
+        'invalid': _(u"Invalid CNPJ number."),
+        'max_digits': _(u"CNPJ requires at most 14 digits or 18 characters."),
+        'digits_only': _(u"CNPJ requires only numbers, allow '.', '/' and '-' for long format."),
     }
     
     def __init__(self, cnpj):
@@ -197,9 +197,9 @@ class CPF(object):
     invalid_cpfs=map(lambda x: [x for i in range(11)],xrange(1,9))
 
     error_messages = {
-        'invalid': u"Invalid CPF number.",
-        'max_digits': u"CPF requires at most 11 digits or 14 characters.",
-        'digits_only': u"CPF requires only numbers, allow '.' and '-' for long format.",
+        'invalid': _(u"Invalid CPF number."),
+        'max_digits': _(u"CPF requires at most 11 digits or 14 characters."),
+        'digits_only': _(u"CPF requires only numbers, allow '.' and '-' for long format."),
     }
     
     def __init__(self, cpf):
