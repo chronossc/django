@@ -3,7 +3,7 @@ from django.test import TestCase
 
 # just import your tests here
 from us.tests import *
-
+from br.tests import *
 
 # Get every subclass of TestCase and add to suite
 # Now script check for every imported class, if is a subclass of TestCase add
