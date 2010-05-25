@@ -15,6 +15,9 @@ class BRCPFField(models.CharField):
         kwargs['max_length'] = 14 if self.longformat else 11
         super(BRCPFField,self).__init__(*args,**kwargs)
 
+    def get_internal_type(self):
+        return "CharField"
+
     def formfield(self,**kwargs):
         defaults = {'form_class': forms.BRCPFField}
         defaults.update(kwargs)
@@ -32,7 +35,7 @@ class BRCPFField(models.CharField):
     def get_prep_value(self,value):
         value = self.to_python(value)
         if not value:
-            return None
+            return ''
         if self.longformat:
             return value.__unicode__
         else:
@@ -48,6 +51,9 @@ class BRCNPJField(models.CharField):
         self.longformat = kwargs.pop('longformat',False)
         kwargs['max_length'] = 18 if self.longformat else 14
         super(BRCNPJField,self).__init__(*args,**kwargs)
+
+    def get_internal_type(self):
+        return "CharField"
 
     def formfield(self,**kwargs):
         defaults = {'form_class': forms.BRCNPJField}
@@ -66,7 +72,7 @@ class BRCNPJField(models.CharField):
     def get_prep_value(self,value):
         value = self.to_python(value)
         if not value:
-            return None
+            return ''
         if self.longformat:
             return value.__unicode__
         else:
