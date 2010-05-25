@@ -1,1 +1,0 @@
-from us.models import *
