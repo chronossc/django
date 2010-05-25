@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: Grupo de Localização para o Português <django-l10n-portuguese@googlegroups.com>\n"
-"POT-Creation-Date: 2010-05-11 00:43-0300\n"
+"POT-Creation-Date: 2010-05-24 22:56-0500\n"
 "PO-Revision-Date: 2010-03-19 17:58-0300\n"
 "Last-Translator: Guilherme Gondim <semente@taurinus.org>\n"
 "Language-Team: Grupo de Localização para o Português <django-l10n-portuguese@googlegroups.com>\n"
@@ -311,15 +311,15 @@ msgstr "Este mês"
 msgid "This year"
 msgstr "Este ano"
 
-#: contrib/admin/filterspecs.py:147 forms/widgets.py:469
+#: contrib/admin/filterspecs.py:147 forms/widgets.py:466
 msgid "Yes"
 msgstr "Sim"
 
-#: contrib/admin/filterspecs.py:147 forms/widgets.py:469
+#: contrib/admin/filterspecs.py:147 forms/widgets.py:466
 msgid "No"
 msgstr "Não"
 
-#: contrib/admin/filterspecs.py:154 forms/widgets.py:469
+#: contrib/admin/filterspecs.py:154 forms/widgets.py:466
 msgid "Unknown"
 msgstr "Desconhecido"
 
@@ -365,7 +365,7 @@ msgid "Changed %s."
 msgstr "Modificado %s."
 
 #: contrib/admin/options.py:559 contrib/admin/options.py:569
-#: contrib/comments/templates/comments/preview.html:16 db/models/base.py:844
+#: contrib/comments/templates/comments/preview.html:16 db/models/base.py:845
 #: forms/models.py:568
 msgid "and"
 msgstr "e"
@@ -1420,8 +1420,8 @@ msgstr "mensagem"
 msgid "Logged out"
 msgstr "Sessão encerrada"
 
-#: contrib/auth/management/commands/createsuperuser.py:23
-#: core/validators.py:120 forms/fields.py:428
+#: contrib/auth/management/commands/createsuperuser.py:24
+#: core/validators.py:120 forms/fields.py:427
 msgid "Enter a valid e-mail address."
 msgstr "Informe um endereço de email válido."
 
@@ -4490,22 +4490,22 @@ msgstr "sites"
 msgid "Enter a valid value."
 msgstr "Informe um valor válido."
 
-#: core/validators.py:87 forms/fields.py:529
+#: core/validators.py:87 forms/fields.py:528
 msgid "Enter a valid URL."
 msgstr "Informe uma URL válida."
 
-#: core/validators.py:89 forms/fields.py:530
+#: core/validators.py:89 forms/fields.py:529
 msgid "This URL appears to be a broken link."
 msgstr "A URL %s aparenta ser um link quebrado."
 
-#: core/validators.py:123 forms/fields.py:873
+#: core/validators.py:123 forms/fields.py:877
 msgid ""
 "Enter a valid 'slug' consisting of letters, numbers, underscores or hyphens."
 msgstr ""
 "Insira um \"slug\" válido consistindo de letras, números, sublinhados (_) ou "
 "hífens."
 
-#: core/validators.py:126 forms/fields.py:866
+#: core/validators.py:126 forms/fields.py:870
 msgid "Enter a valid IPv4 address."
 msgstr "Informe um endereço IPv4 válido."
 
@@ -4518,12 +4518,12 @@ msgstr "Informe apenas dígitos separados por vírgulas."
 msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
 msgstr "Certifique-se de que o valor é %(limit_value)s (ele é %(show_value)s)."
 
-#: core/validators.py:153 forms/fields.py:205 forms/fields.py:257
+#: core/validators.py:153 forms/fields.py:204 forms/fields.py:256
 #, python-format
 msgid "Ensure this value is less than or equal to %(limit_value)s."
 msgstr "Certifique-se que este valor seja menor ou igual a %(limit_value)s."
 
-#: core/validators.py:158 forms/fields.py:206 forms/fields.py:258
+#: core/validators.py:158 forms/fields.py:205 forms/fields.py:257
 #, python-format
 msgid "Ensure this value is greater than or equal to %(limit_value)s."
 msgstr "Certifique-se que este valor seja maior ou igual a %(limit_value)s."
@@ -4546,12 +4546,12 @@ msgstr ""
 "Certifique-se de que o valor tenha no máximo %(limit_value)d caracteres (ele "
 "possui %(show_value)d)."
 
-#: db/models/base.py:822
+#: db/models/base.py:823
 #, python-format
 msgid "%(field_name)s must be unique for %(date_field)s %(lookup)s."
 msgstr "%(field_name)s deverá ser único para %(date_field)s %(lookup)s."
 
-#: db/models/base.py:837 db/models/base.py:845
+#: db/models/base.py:838 db/models/base.py:846
 #, python-format
 msgid "%(model_name)s with this %(field_label)s already exists."
 msgstr "%(model_name)s com este %(field_label)s já existe."
@@ -4715,55 +4715,55 @@ msgstr[1] ""
 msgid "This field is required."
 msgstr "Este campo é obrigatório."
 
-#: forms/fields.py:204
+#: forms/fields.py:203
 msgid "Enter a whole number."
 msgstr "Informe um número inteiro."
 
-#: forms/fields.py:235 forms/fields.py:256
+#: forms/fields.py:234 forms/fields.py:255
 msgid "Enter a number."
 msgstr "Informe um número."
 
-#: forms/fields.py:259
+#: forms/fields.py:258
 #, python-format
 msgid "Ensure that there are no more than %s digits in total."
 msgstr "Certifique-se de que não tenha mais de %s dígitos no total."
 
-#: forms/fields.py:260
+#: forms/fields.py:259
 #, python-format
 msgid "Ensure that there are no more than %s decimal places."
 msgstr "Certifique-se de que não tenha mais de %s casa decimais."
 
-#: forms/fields.py:261
+#: forms/fields.py:260
 #, python-format
 msgid "Ensure that there are no more than %s digits before the decimal point."
 msgstr ""
 "Certifique-se de que não tenha mais de %s dígitos antes do ponto decimal."
 
-#: forms/fields.py:323 forms/fields.py:838
+#: forms/fields.py:322 forms/fields.py:837
 msgid "Enter a valid date."
 msgstr "Informe uma data válida."
 
-#: forms/fields.py:351 forms/fields.py:839
+#: forms/fields.py:350 forms/fields.py:838
 msgid "Enter a valid time."
 msgstr "Informe uma hora válida."
 
-#: forms/fields.py:377
+#: forms/fields.py:376
 msgid "Enter a valid date/time."
 msgstr "Informe uma data/hora válida."
 
-#: forms/fields.py:435
+#: forms/fields.py:434
 msgid "No file was submitted. Check the encoding type on the form."
 msgstr "Nenhum arquivo enviado. Verifique o tipo de codificação do formulário."
 
-#: forms/fields.py:436
+#: forms/fields.py:435
 msgid "No file was submitted."
 msgstr "Não foi enviado nenhum arquivo."
 
-#: forms/fields.py:437
+#: forms/fields.py:436
 msgid "The submitted file is empty."
 msgstr "O arquivo enviado está vazio."
 
-#: forms/fields.py:438
+#: forms/fields.py:437
 #, python-format
 msgid ""
 "Ensure this filename has at most %(max)d characters (it has %(length)d)."
@@ -4771,7 +4771,7 @@ msgstr ""
 "Certifique-se de que o arquivo tenha no máximo %(max)d caracteres (ele "
 "possui %(length)d)."
 
-#: forms/fields.py:473
+#: forms/fields.py:472
 msgid ""
 "Upload a valid image. The file you uploaded was either not an image or a "
 "corrupted image."
@@ -4779,12 +4779,12 @@ msgstr ""
 "Envie uma imagem válida. O arquivo enviado não é uma imagem ou está "
 "corrompido."
 
-#: forms/fields.py:596 forms/fields.py:671
+#: forms/fields.py:595 forms/fields.py:670
 #, python-format
 msgid "Select a valid choice. %(value)s is not one of the available choices."
 msgstr "Faça uma escolha válida. %(value)s não está disponível."
 
-#: forms/fields.py:672 forms/fields.py:734 forms/models.py:1002
+#: forms/fields.py:671 forms/fields.py:733 forms/models.py:1002
 msgid "Enter a list of values."
 msgstr "Informe uma lista de valores."
 
