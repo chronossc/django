@@ -11,3 +11,14 @@ class BRCPFCNPJ(models.Model):
 
     class Meta:
         app_label = 'localflavor_regress'
+
+class BRCPFCNPJ2(models.Model):
+
+    cpf = BRCPFField(blank=True)
+    cnpj = BRCNPJField(blank=True)
+
+    def __unicode__(self):
+        return u"%s ,  %s" % (self.cpf,self.cnpj)
+
+    class Meta:
+        app_label = 'localflavor_regress'

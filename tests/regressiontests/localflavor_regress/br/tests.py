@@ -1,8 +1,11 @@
 from django.test import TestCase
-from models import BRCPFCNPJ
-from forms import BRCPFCNPJForm
+from django import forms
 from django.contrib.localflavor.br.br_cpfcnpj import CPF, CNPJ, CPFGenerator,\
     CNPJGenerator
+from django.contrib.localflavor.br import forms as brforms
+from models import BRCPFCNPJ, BRCPFCNPJ2
+from forms import BRCPFCNPJForm
+
 from random import choice
 
 class BRCPFCNPJTests(TestCase):
@@ -117,5 +120,57 @@ class BRCPFCNPJTests(TestCase):
                 # check if numbers are equal
                 self.assertEqual(cpf,inst.cpf.single)
                 self.assertEqual(cnpj,inst.cnpj.single)
+
+
+    def test_cpfcnpj_simpleform(self):
+        """ test single form with blank value and normal value """
+
+        class Form1(forms.Form):
+            cpf = brforms.BRCPFField(required=False)
+            def save(self):
+                return self.cleaned_data
+        class Form2(forms.Form):
+            cnpj = brforms.BRCNPJField(required=False)
+            def save(self):
+                return self.cleaned_data
+
+
+        cpf = CPFGenerator()
+        cnpj = CNPJGenerator()
+
+        """ with cpf """
+        f = Form1(data={'cpf':cpf})
+        self.assertEqual(f.is_valid(),True)
+        self.assertEqual({'cpf':cpf},f.save())
+        """ without cpf """
+        f = Form1(data={'cpf':''})
+        self.assertEqual(f.is_valid(),True)
+        self.assertEqual({'cpf':''},f.save())
+
+
+        """ with cnpj """
+        f = Form2(data={'cnpj':cnpj})
+        self.assertEqual(f.is_valid(),True)
+        self.assertEqual({'cnpj':cnpj},f.save())
+        """ without cnpj """
+        f = Form2(data={'cnpj':''})
+        self.assertEqual(f.is_valid(),True)
+        self.assertEqual({'cnpj':''},f.save())
+
+    def test_cpfcnpj_blank_model_form(self):
+        """ test blank=True for models and forms """
+
+        class Form1(forms.ModelForm):
+
+            class Meta:
+                model = BRCPFCNPJ2
+
+        f = Form1(data={'cpf':'','cnpj':''})
+        self.assertEqual(f.is_valid(),True)
+        self.assertEqual({'cnpj':'','cpf':''},f.cleaned_data)
+        f.save()
+        m = BRCPFCNPJ2.objects.get(pk=1)
+        self.assertEqual(m.cpf,'')
+        self.assertEqual(m.cnpj,'')
 
 
