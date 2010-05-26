@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Django\n"
 "Report-Msgid-Bugs-To: Grupo de Localização para o Português <django-l10n-portuguese@googlegroups.com>\n"
-"POT-Creation-Date: 2010-05-24 22:56-0500\n"
+"POT-Creation-Date: 2010-05-26 00:42-0300\n"
 "PO-Revision-Date: 2010-03-19 17:58-0300\n"
 "Last-Translator: Guilherme Gondim <semente@taurinus.org>\n"
 "Language-Team: Grupo de Localização para o Português <django-l10n-portuguese@googlegroups.com>\n"
@@ -2002,15 +2002,15 @@ msgstr "Este campo requer no máximo 14 dígitos ou 18 caracteres."
 msgid "CNPJ requires only numbers, allow '.', '/' and '-' for long format."
 msgstr "Este campo aceita somente números e os caracteres '.', '/' e '-'."
 
-#: contrib/localflavor/br/br_cpfcnpj.py:200 contrib/localflavor/br/forms.py:86
+#: contrib/localflavor/br/br_cpfcnpj.py:201 contrib/localflavor/br/forms.py:86
 msgid "Invalid CPF number."
 msgstr "Número de CPF inválido."
 
-#: contrib/localflavor/br/br_cpfcnpj.py:201
+#: contrib/localflavor/br/br_cpfcnpj.py:202
 msgid "CPF requires at most 11 digits or 14 characters."
 msgstr "Este campo requer no máximo 11 dígitos ou 14 caracteres."
 
-#: contrib/localflavor/br/br_cpfcnpj.py:202
+#: contrib/localflavor/br/br_cpfcnpj.py:203
 msgid "CPF requires only numbers, allow '.' and '-' for long format."
 msgstr "Este campo aceita somente números e os caracteres '.' e '-'."
 
