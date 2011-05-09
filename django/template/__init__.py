@@ -839,6 +839,14 @@ class VariableNode(Node):
     def __repr__(self):
         return "<Variable Node: %s>" % self.filter_expression
 
+    def clean_pks(self, output):
+        # avoid localization of pk or ids
+        var_token = self.filter_expression.token
+        filters = self.filter_expression.filters
+        if ((var_token.endswith('.pk') and type(output) in (long,int)) or var_token.endswith('.id')) and not filters:
+            output = mark_safe(output)
+        return output
+
     def render(self, context):
         try:
             output = self.filter_expression.resolve(context)
@@ -846,6 +854,9 @@ class VariableNode(Node):
             # Unicode conversion can fail sometimes for reasons out of our
             # control (e.g. exception rendering). In that case, we fail quietly.
             return ''
+
+        output = self.clean_pks(output)
+
         return _render_value_in_context(output, context)
 
 def generic_tag_compiler(params, defaults, name, node_class, parser, token):

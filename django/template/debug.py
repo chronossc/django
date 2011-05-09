@@ -87,6 +87,7 @@ class DebugVariableNode(VariableNode):
     def render(self, context):
         try:
             output = self.filter_expression.resolve(context)
+            output = self.clean_pks(output)
             output = localize(output)
             output = force_unicode(output)
         except TemplateSyntaxError, e:
@@ -95,6 +96,7 @@ class DebugVariableNode(VariableNode):
             raise
         except UnicodeDecodeError:
             return ''
+
         if (context.autoescape and not isinstance(output, SafeData)) or isinstance(output, EscapeData):
             return escape(output)
         else:
