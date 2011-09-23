@@ -300,7 +300,7 @@ def label_for_field(name, model, model_admin=None, return_attr=False):
             else:
                 message = "Unable to lookup '%s' on %s" % (name, model._meta.object_name)
                 if model_admin:
-                    message += " or %s" % (model_admin.__name__,)
+                    message += " or %s" % (model_admin.__class__.__name__,)
                 raise AttributeError(message)
 
             if hasattr(attr, "short_description"):
@@ -316,6 +316,13 @@ def label_for_field(name, model, model_admin=None, return_attr=False):
         return (label, attr)
     else:
         return label
+
+def help_text_for_field(name, model):
+    try:
+        help_text = model._meta.get_field_by_name(name)[0].help_text
+    except models.FieldDoesNotExist:
+        help_text = ""
+    return smart_unicode(help_text)
 
 
 def display_for_field(value, field):

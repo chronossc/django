@@ -572,7 +572,8 @@ You cannot check for equality with Python objects such as ``True`` or
 tag instead.
 
 .. versionadded:: 1.2
-   An alternative to the ``ifequal`` tag is to use the :ttag:`if` tag and the ``==`` operator.
+   An alternative to the ``ifequal`` tag is to use the :ttag:`if` tag and the
+   ``==`` operator.
 
 .. templatetag:: ifnotequal
 
@@ -582,7 +583,8 @@ ifnotequal
 Just like ``ifequal``, except it tests that the two arguments are not equal.
 
 .. versionadded:: 1.2
-   An alternative to the ``ifnotequal`` tag is to use the :ttag:`if` tag and the ``!=`` operator.
+   An alternative to the ``ifnotequal`` tag is to use the :ttag:`if` tag and the
+   ``!=`` operator.
 
 .. templatetag:: include
 
@@ -632,19 +634,17 @@ load
 
 Load a custom template tag set.
 
-See :doc:`Custom tag and filter libraries </howto/custom-template-tags>` for more information.
+See :doc:`Custom tag and filter libraries </howto/custom-template-tags>` for
+more information.
 
 .. templatetag:: now
 
 now
 ~~~
 
-Display the current date and/or time, according to the given string.
-
-Given format can be one of the predefined ones ``DATE_FORMAT``,
-``DATETIME_FORMAT``, ``SHORT_DATE_FORMAT`` or ``SHORT_DATETIME_FORMAT``,
-or a custom format, same as the :tfilter:`date` filter. Note that predefined
-formats may vary depending on the current locale.
+Display the current date and/or time, using a format according to the given
+string. Such string can contain format specifiers characters as described
+in the :tfilter:`date` filter section.
 
 Example::
 
@@ -908,8 +908,8 @@ refer to the name of the pattern in the ``url`` tag instead of using the
 path to the view.
 
 Note that if the URL you're reversing doesn't exist, you'll get an
-:exc:`NoReverseMatch` exception raised, which will cause your site to display an
-error page.
+:exc:`~django.core.urlresolvers.NoReverseMatch` exception raised, which will
+cause your site to display an error page.
 
 If you'd like to retrieve a URL without displaying it, you can use a slightly
 different call::

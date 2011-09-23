@@ -154,9 +154,9 @@ class ModelAdminTests(TestCase):
         self.assertEqual(str(form["main_band"]),
             '<select name="main_band" id="id_main_band">\n'
             '<option value="" selected="selected">---------</option>\n'
-            '<option value="%d">The Doors</option>\n'
             '<option value="%d">The Beatles</option>\n'
-            '</select>' % (self.band.id, band2.id))
+            '<option value="%d">The Doors</option>\n'
+            '</select>' % (band2.id, self.band.id))
 
         class AdminConcertForm(forms.ModelForm):
             class Meta:
@@ -778,8 +778,13 @@ class ValidationTests(unittest.TestCase):
             ValidationTestModel,
         )
 
+        def a_callable(obj):
+            pass
+
         class ValidationTestModelAdmin(ModelAdmin):
-            list_display = ('name',)
+            def a_method(self, obj):
+                pass
+            list_display = ('name', 'decade_published_in', 'a_method', a_callable)
 
         validate(ValidationTestModelAdmin, ValidationTestModel)
 
@@ -801,7 +806,7 @@ class ValidationTests(unittest.TestCase):
 
         self.assertRaisesErrorWithMessage(
             ImproperlyConfigured,
-            "'ValidationTestModelAdmin.list_display_links[0]' refers to 'non_existent_field' that is neither a field, method or property of model 'ValidationTestModel'.",
+            "'ValidationTestModelAdmin.list_display_links[0]' refers to 'non_existent_field' which is not defined in 'list_display'.",
             validate,
             ValidationTestModelAdmin,
             ValidationTestModel,
@@ -812,15 +817,22 @@ class ValidationTests(unittest.TestCase):
 
         self.assertRaisesErrorWithMessage(
             ImproperlyConfigured,
-            "'ValidationTestModelAdmin.list_display_links[0]'refers to 'name' which is not defined in 'list_display'.",
+            "'ValidationTestModelAdmin.list_display_links[0]' refers to 'name' which is not defined in 'list_display'.",
             validate,
             ValidationTestModelAdmin,
             ValidationTestModel,
         )
 
+        def a_callable(obj):
+            pass
+
         class ValidationTestModelAdmin(ModelAdmin):
             list_display = ('name',)
             list_display_links = ('name',)
+            def a_method(self, obj):
+                pass
+            list_display = ('name', 'decade_published_in', 'a_method', a_callable)
+            list_display_links = ('name', 'decade_published_in', 'a_method', a_callable)
 
         validate(ValidationTestModelAdmin, ValidationTestModel)
 

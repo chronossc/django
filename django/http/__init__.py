@@ -45,7 +45,8 @@ class HttpRequest(object):
     def get_host(self):
         """Returns the HTTP host using the environment or request headers."""
         # We try three options, in order of decreasing preference.
-        if 'HTTP_X_FORWARDED_HOST' in self.META:
+        if settings.USE_X_FORWARDED_HOST and (
+            'HTTP_X_FORWARDED_HOST' in self.META):
             host = self.META['HTTP_X_FORWARDED_HOST']
         elif 'HTTP_HOST' in self.META:
             host = self.META['HTTP_HOST']
@@ -276,13 +277,33 @@ class CompatCookie(SimpleCookie):
 
         return val, encoded
 
+    def load(self, rawdata, ignore_parse_errors=False):
+        if ignore_parse_errors:
+            self.bad_cookies = []
+            self._BaseCookie__set = self._loose_set
+        SimpleCookie.load(self, rawdata)
+        if ignore_parse_errors:
+            self._BaseCookie__set = self._strict_set
+            for key in self.bad_cookies:
+                del self[key]
+
+    _strict_set = BaseCookie._BaseCookie__set
+
+    def _loose_set(self, key, real_value, coded_value):
+        try:
+            self._strict_set(key, real_value, coded_value)
+        except CookieError:
+            self.bad_cookies.append(key)
+            dict.__setitem__(self, key, None)
+
+
 def parse_cookie(cookie):
     if cookie == '':
         return {}
     if not isinstance(cookie, BaseCookie):
         try:
             c = CompatCookie()
-            c.load(cookie)
+            c.load(cookie, ignore_parse_errors=True)
         except CookieError:
             # Invalid cookie
             return {}

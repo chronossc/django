@@ -41,7 +41,7 @@ class RegexValidator(object):
 class URLValidator(RegexValidator):
     regex = re.compile(
         r'^https?://' # http:// or https://
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|' #domain...
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|' #domain...
         r'localhost|' #localhost...
         r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # ...or ip
         r'(?::\d+)?' # optional port
@@ -81,7 +81,7 @@ class URLValidator(RegexValidator):
                 "User-Agent": self.user_agent,
             }
             try:
-                req = urllib2.Request(url, None, headers)
+                req = urllib2.Request(url.encode('utf-8'), None, headers)
                 u = urllib2.urlopen(req)
             except ValueError:
                 raise ValidationError(_(u'Enter a valid URL.'), code='invalid')

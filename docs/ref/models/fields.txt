@@ -814,7 +814,7 @@ shortcuts.
 ``URLField``
 ------------
 
-.. class:: URLField([verify_exists=True, max_length=200, **options])
+.. class:: URLField([verify_exists=False, max_length=200, **options])
 
 A :class:`CharField` for a URL. Has one extra optional argument:
 
@@ -827,6 +827,12 @@ A :class:`CharField` for a URL. Has one extra optional argument:
     validating a URL being served by the same server will hang. This should not
     be a problem for multithreaded servers.
 
+.. versionchanged:: 1.2
+
+    The default value of ``verify_exists`` has been changed to
+    ``False``. This argument should not be set to ``True`` because it
+    has security and performance problems.
+
 The admin represents this as an ``<input type="text">`` (a single-line input).
 
 Like all :class:`CharField` subclasses, :class:`URLField` takes the optional
@@ -838,15 +844,13 @@ Like all :class:`CharField` subclasses, :class:`URLField` takes the optional
 
 .. class:: XMLField(schema_path=None, [**options])
 
-A :class:`TextField` that checks that the value is valid XML that matches a
-given schema. Takes one required argument:
+A :class:`TextField` that stores XML data and a path to a schema. Takes one
+optional argument:
 
 .. attribute:: schema_path
 
-    The filesystem path to a RelaxNG_ schema against which to validate the
-    field.
+    The filesystem path to a schema for the field.
 
-.. _RelaxNG: http://www.relaxng.org/
 
 Relationship fields
 ===================

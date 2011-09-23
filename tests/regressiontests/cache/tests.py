@@ -14,12 +14,12 @@ from django.core import management
 from django.core.cache import get_cache
 from django.core.cache.backends.base import CacheKeyWarning
 from django.http import HttpResponse, HttpRequest
-from django.middleware.cache import FetchFromCacheMiddleware, UpdateCacheMiddleware
-from django.test import TestCase
+from django.middleware.cache import FetchFromCacheMiddleware, UpdateCacheMiddleware, CacheMiddleware
 from django.test.utils import get_warnings_state, restore_warnings_state
 from django.utils import translation
 from django.utils.cache import patch_vary_headers, get_cache_key, learn_cache_key
 from django.utils.hashcompat import md5_constructor
+from django.views.decorators.cache import cache_page
 from regressiontests.cache.models import Poll, expensive_calculation
 
 # functions/classes for complex data type tests
@@ -293,8 +293,22 @@ class BaseCacheTests(object):
             u'Iñtërnâtiônàlizætiøn': u'Iñtërnâtiônàlizætiøn2',
             u'ascii': {u'x' : 1 }
             }
+        # Test `set`
         for (key, value) in stuff.items():
             self.cache.set(key, value)
+            self.assertEqual(self.cache.get(key), value)
+
+        # Test `add`
+        for (key, value) in stuff.items():
+            self.cache.delete(key)
+            self.cache.add(key, value)
+            self.assertEqual(self.cache.get(key), value)
+
+        # Test `set_many`
+        for (key, value) in stuff.items():
+            self.cache.delete(key)
+        self.cache.set_many(stuff)
+        for (key, value) in stuff.items():
             self.assertEqual(self.cache.get(key), value)
 
     def test_binary_string(self):
@@ -302,8 +316,22 @@ class BaseCacheTests(object):
         from zlib import compress, decompress
         value = 'value_to_be_compressed'
         compressed_value = compress(value)
+
+        # Test set
         self.cache.set('binary1', compressed_value)
         compressed_result = self.cache.get('binary1')
+        self.assertEqual(compressed_value, compressed_result)
+        self.assertEqual(value, decompress(compressed_result))
+
+        # Test add
+        self.cache.add('binary1-add', compressed_value)
+        compressed_result = self.cache.get('binary1-add')
+        self.assertEqual(compressed_value, compressed_result)
+        self.assertEqual(value, decompress(compressed_result))
+
+        # Test set_many
+        self.cache.set_many({'binary1-set_many': compressed_value})
+        compressed_result = self.cache.get('binary1-set_many')
         self.assertEqual(compressed_value, compressed_result)
         self.assertEqual(value, decompress(compressed_result))
 
@@ -648,27 +676,79 @@ class CacheI18nTest(unittest.TestCase):
         get_cache_data = FetchFromCacheMiddleware().process_request(request)
         self.assertEqual(get_cache_data.content, es_message)
 
+def hello_world_view(request, value):
+    return HttpResponse('Hello World %s' % value)
 
-class CacheMiddlewareAnonymousOnlyTests(TestCase):
-    urls = 'regressiontests.cache.urls'
+class CacheMiddlewareTest(unittest.TestCase):
 
     def setUp(self):
-        self._orig_cache_middleware_anonymous_only = \
-            getattr(settings, 'CACHE_MIDDLEWARE_ANONYMOUS_ONLY', False)
-        self._orig_middleware_classes = settings.MIDDLEWARE_CLASSES
+        from django.middleware import cache as cache_middleware_module
 
-        settings.MIDDLEWARE_CLASSES = list(settings.MIDDLEWARE_CLASSES)
-        settings.MIDDLEWARE_CLASSES.insert(0, 'django.middleware.cache.UpdateCacheMiddleware')
-        settings.MIDDLEWARE_CLASSES += ['django.middleware.cache.FetchFromCacheMiddleware']
+        self.cache_middleware_module = cache_middleware_module
+        self.orig_cache = self.cache_middleware_module.cache
+        self.orig_cache_middleware_anonymous_only = getattr(settings, 'CACHE_MIDDLEWARE_ANONYMOUS_ONLY', False)
+
+        cache_middleware_module.cache = get_cache("locmem://")
+        settings.CACHE_MIDDLEWARE_ANONYMOUS_ONLY = False
 
     def tearDown(self):
-        settings.CACHE_MIDDLEWARE_ANONYMOUS_ONLY = self._orig_cache_middleware_anonymous_only
-        settings.MIDDLEWARE_CLASSES = self._orig_middleware_classes
+        self.cache_middleware_module.cache = self.orig_cache
+        settings.CACHE_MIDDLEWARE_ANONYMOUS_ONLY = self.orig_cache_middleware_anonymous_only
 
-    def test_cache_middleware_anonymous_only_does_not_cause_vary_cookie(self):
+    def test_cache_middleware_anonymous_only_wont_cause_session_access(self):
+        """ The cache middleware shouldn't cause a session access due to
+        CACHE_MIDDLEWARE_ANONYMOUS_ONLY if nothing else has accessed the
+        session. Refs 13283 """
         settings.CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
-        response = self.client.get('/')
-        self.failIf('Cookie' in response.get('Vary', ''))
+
+        from django.contrib.sessions.middleware import SessionMiddleware
+        from django.contrib.auth.middleware import AuthenticationMiddleware
+
+        middleware = CacheMiddleware()
+        session_middleware = SessionMiddleware()
+        auth_middleware = AuthenticationMiddleware()
+
+        request = HttpRequest()
+        request.path = '/view_anon/'
+        request.method = 'GET'
+
+        # Put the request through the request middleware
+        session_middleware.process_request(request)
+        auth_middleware.process_request(request)
+        result = middleware.process_request(request)
+        self.assertEquals(result, None)
+
+        response = hello_world_view(request, '1')
+
+        # Now put the response through the response middleware
+        session_middleware.process_response(request, response)
+        response = middleware.process_response(request, response)
+
+        self.assertEqual(request.session.accessed, False)
+
+    def test_cache_middleware_anonymous_only_with_cache_page(self):
+        """CACHE_MIDDLEWARE_ANONYMOUS_ONLY should still be effective when used
+        with the cache_page decorator: the response to a request from an
+        authenticated user should not be cached."""
+        settings.CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
+
+        request = HttpRequest()
+        request.path = '/view/'
+        request.method = 'GET'
+
+        class MockAuthenticatedUser(object):
+            def is_authenticated(self):
+                return True
+
+        class MockAccessedSession(object):
+            accessed = True
+
+        request.user = MockAuthenticatedUser()
+        request.session = MockAccessedSession()
+
+        response = cache_page(hello_world_view)(request, '1')
+
+        self.assertFalse("Cache-Control" in response)
 
 
 if __name__ == '__main__':
